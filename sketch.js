@@ -1,4 +1,5 @@
 loadScript("./p5.min.js")
+loadScript("./assets/paddle.js")
 loadScript("./pages/menu-screen.js")
 loadScript("./pages/game-screen.js")
 loadScript("./pages/gameover-screen.js")
@@ -6,6 +7,7 @@ loadScript("./pages/gameover-screen.js")
 // Variáveis globais
 let gameState = "menu"
 let score = 0
+//let agent --paddle
 
 function setup() {
     createCanvas(1200, 600)
@@ -14,6 +16,8 @@ function setup() {
     textSize(30)
     noStroke()
     fill(33)
+
+    paddle = new Paddle()
 }
 
 function draw() {

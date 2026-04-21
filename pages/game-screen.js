@@ -11,7 +11,5 @@ function playGameScreenDraw() {
         gameState = "gameover"
     }*/
 
-    fill(100, 150, 255)
-    arc(width / 2, height - 40, 130, 30, PI, TWO_PI)
-    rect(width / 2, height - 30, 130, 20)
+    paddle.draw()
 }
