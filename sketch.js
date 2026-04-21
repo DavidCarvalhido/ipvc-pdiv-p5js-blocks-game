@@ -6,6 +6,9 @@ loadScript("./pages/gameover-screen.js")
 
 // Variáveis globais
 let gameState = "menu"
+let menuScreen
+let gameScreen
+let gameOverScreen
 let score = 0
 //let agent --paddle
 
@@ -17,18 +20,20 @@ function setup() {
     noStroke()
     fill(33)
 
-    paddle = new Paddle()
+    menuScreen = new MenuScreen()
+    gameScreen = new GameScreen()
+    gameOverScreen = new GameOverScreen()
 }
 
 function draw() {
     background(220)
 
     if (gameState === "menu") {
-        menuScreenDraw()
+        menuScreen.draw()
     } else if (gameState === "game") {
-        playGameScreenDraw()
+        gameScreen.draw()
     } else if (gameState === "gameover") {
-        gameOverScreenDraw()
+        gameOverScreen.draw()
     }
 }
 
