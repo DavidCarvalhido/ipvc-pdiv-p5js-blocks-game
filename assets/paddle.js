@@ -8,9 +8,18 @@ class Paddle {
         this.corFill = corFill
         this.corStroke = corStroke
         this.lineWeight = lineWeight
+
+        // Movimento com o rato
+        this.x = width / 2
     }
 
     move() {
+        let targetX = mouseX
+        this.x = lerp(this.x, targetX, 0.03)
+
+        // limita o movimento do paddle dentro da arena
+        let halfWidth = 130 / 2
+        this.x = constrain(this.x, halfWidth, width - halfWidth)
     }
 
     draw() {
@@ -24,7 +33,7 @@ class Paddle {
 
         beginShape()
 
-        let cx = width / 2
+        let cx = this.x //width / 2
         let cy = height - 40
         let ch = height - 25
         let w = 130

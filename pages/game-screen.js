@@ -9,6 +9,7 @@ class GameScreen {
         text("Score: " + score, 70, 30)
 
         this.paddle.draw()
+        this.paddle.move()
     }
 
     // Aumenta o score ao longo do tempo -- apenas para teste

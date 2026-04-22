@@ -35,6 +35,8 @@ function draw() {
     } else if (gameState === "gameover") {
         gameOverScreen.draw()
     }
+
+    
 }
 
 function keyPressed() {
