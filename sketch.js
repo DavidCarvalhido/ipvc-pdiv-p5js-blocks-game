@@ -1,11 +1,16 @@
 loadScript("./p5.min.js")
+loadScript("./assets/paddle.js")
 loadScript("./pages/menu-screen.js")
 loadScript("./pages/game-screen.js")
 loadScript("./pages/gameover-screen.js")
 
 // Variáveis globais
 let gameState = "menu"
+let menuScreen
+let gameScreen
+let gameOverScreen
 let score = 0
+//let agent --paddle
 
 function setup() {
     createCanvas(1200, 600)
@@ -14,18 +19,24 @@ function setup() {
     textSize(30)
     noStroke()
     fill(33)
+
+    menuScreen = new MenuScreen()
+    gameScreen = new GameScreen()
+    gameOverScreen = new GameOverScreen()
 }
 
 function draw() {
     background(220)
 
     if (gameState === "menu") {
-        menuScreenDraw()
+        menuScreen.draw()
     } else if (gameState === "game") {
-        playGameScreenDraw()
+        gameScreen.draw()
     } else if (gameState === "gameover") {
-        gameOverScreenDraw()
+        gameOverScreen.draw()
     }
+
+    
 }
 
 function keyPressed() {
