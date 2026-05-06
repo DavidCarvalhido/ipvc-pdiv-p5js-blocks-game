@@ -1,5 +1,6 @@
 loadScript("./p5.min.js")
 loadScript("./assets/paddle.js")
+loadScript("./assets/ball.js")
 loadScript("./pages/menu-screen.js")
 loadScript("./pages/game-screen.js")
 loadScript("./pages/gameover-screen.js")

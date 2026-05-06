@@ -9,8 +9,13 @@ class Paddle {
         this.corStroke = corStroke
         this.lineWeight = lineWeight
 
-        // Movimento com o rato
+        // movimento com o rato
         this.x = width / 2
+
+        // limite do paddle (para a colisão)
+        this.width = 130
+        this.height = 20
+        this.y = height - 40
     }
 
     move() {
