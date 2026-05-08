@@ -1,9 +1,13 @@
 class GameScreen {
     constructor() {
+        //raquete
         this.paddle = new Paddle()
+        //bola
         this.ball = new Ball()
-
+        //array de blocos
         this.blocks = []
+        //array de partículas
+        this.particles = []
 
         let cols = 8
         let rows = 1
@@ -41,6 +45,14 @@ class GameScreen {
         //desenha um conjunto de blocos
         for (let block of this.blocks) {
             block.draw()
+        }
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            this.particles[i].move()
+            this.particles[i].draw()
+            if (this.particles[i].isDead()) {
+                this.particles.splice(i, 1)
+            }
         }
     }
 
@@ -121,12 +133,37 @@ class GameScreen {
                 // regista o toque
                 block.hit()
 
+                let particleType = "circle"
+
+                if (block.hits === 1) {
+                    particleType = "circle"
+                }
+                else if (block.hits === 2) {
+                    particleType = "triangle"
+                }
+                else if (block.hits === 3) {
+                    particleType = "smoke"
+                }
+
+                let particleColor = color(block.colors[block.hits - 1])
+                this.spawnParticles(this.ball.x, block.y, particleColor, particleType, 15)
+
                 // score
                 score += 10
 
                 // evita colisões múltiplas no mesmo frame
                 break
             }
+        }
+    }
+
+    spawnParticles(x, y, particleColor, type, amount = 15) {
+        let emitter = createVector(x, y)
+
+        for (let i = 0; i < amount; i++) {
+            this.particles.push(
+                new Particle(emitter, particleColor, type)
+            )
         }
     }
 }
