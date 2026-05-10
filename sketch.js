@@ -13,7 +13,13 @@ let menuScreen
 let gameScreen
 let gameOverScreen
 let score = 0
-//let agent --paddle
+
+function preload() {
+    gameFont = loadFont("./assets/fonts/PressStart2P-Regular.ttf")
+    menuImage = loadImage("./assets/images/menu-background.jpg")
+    menuBlocksImage = loadImage("./assets/images/menu-blocks.png")
+    objectiveMenuImage = loadImage("./assets/images/objective-icon.png")
+}
 
 function setup() {
     createCanvas(1200, 600)
@@ -38,8 +44,6 @@ function draw() {
     } else if (gameState === "gameover") {
         gameOverScreen.draw()
     }
-
-    
 }
 
 function keyPressed() {
