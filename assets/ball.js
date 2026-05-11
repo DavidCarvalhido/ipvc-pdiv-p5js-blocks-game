@@ -22,7 +22,8 @@ class Ball {
         if (this.x + this.radius > width || this.x - this.radius < 0) {
             this.speedX *= -1
         }
-        if (this.y + this.radius > height || this.y - this.radius < 0) {
+        if (this.y - this.radius < gameScreen.hudHeight) {
+            this.y = gameScreen.hudHeight + this.radius
             this.speedY *= -1
         }
     }
