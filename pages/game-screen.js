@@ -16,7 +16,8 @@ class GameScreen {
         this.particles = []
 
         let cols = 8
-        let rows = 1
+        //let rows = 1 // remover
+        let rows = level
         let blockW = 130
         let blockH = 30
         let spacing = 10
@@ -75,8 +76,9 @@ class GameScreen {
         this.blocks = this.blocks.filter(block => !block.isDestroyed())
 
         if (this.blocks.length === 0) {
-            gameResult = "win"
-            gameState = "gameover"
+            // gameResult = "win"
+            // gameState = "gameover"
+            this.nextLevel()
         }
 
         this.verificaParteInferior()
@@ -104,8 +106,27 @@ class GameScreen {
         text("Score: " + score, 30, this.hudHeight / 2)
         text("Vidas: " + lives, 270, this.hudHeight / 2)
         text("Toques: " + paddleHits, 490, this.hudHeight / 2)
+        textAlign(RIGHT, CENTER)
+        text("Nível: " + level, width - 20, this.hudHeight / 2)
 
         pop()
+    }
+
+    nextLevel() {
+        level++
+
+        // terminou todos os níveis
+        if (level > 3) {
+            gameResult = "win"
+            gameState = "gameover"
+            return
+        }
+        // reset vidas
+        lives = 3
+        // recria o jogo
+        //gameScreen = new GameScreen()
+        gameState = "leveltransition"
+        nextLevelReady = true
     }
 
     contagem() {
@@ -257,8 +278,9 @@ class GameScreen {
 
             // sem vidas -> game over
             if (lives <= 0) {
-                gameResult = "lose"
-                gameState = "gameover"
+                // gameResult = "lose"
+                // gameState = "gameover"
+                this.nextLevel()
                 return
             }
 

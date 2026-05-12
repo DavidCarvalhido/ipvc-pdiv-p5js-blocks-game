@@ -25,19 +25,9 @@ class GameOverScreen {
     drawTitle() {
         push()
         textAlign(CENTER, CENTER)
-
-        // efeito pulse
-        let pulse = sin(frameCount * 0.08) * 10
-
-        if (gameResult === "win") {
-            fill("#00FF99")
-            textSize(70 + pulse * 0.1)
-            text("VITÓRIA!", width / 2, height * 0.3)
-        } else {
-            fill("#FF3B30")
-            textSize(70 + pulse * 0.1)
-            text("PERDEU...", width / 2, height * 0.3)
-        }
+        fill(0, 255, 153)
+        textSize(70)
+        text("FIM DO JOGO!", width / 2, height * 0.3)
 
         pop()
     }
@@ -49,6 +39,7 @@ class GameOverScreen {
         textAlign(CENTER)
         textSize(28)
         text("Pontuação Final: " + score, width / 2, height * 0.5)
+        text("Toques na Paddle: " + paddleHits, width / 2, height * 0.55)
 
         pop()
     }
@@ -59,7 +50,7 @@ class GameOverScreen {
         fill(200)
         textAlign(CENTER)
         textSize(22)
-        text("ENTER ou ESPAÇO para voltar ao menu", width / 2, height * 0.7)
+        text("Para voltar a jogar, pressione ENTER ou ESPAÇO", width / 2, height * 0.7)
 
         pop()
     }

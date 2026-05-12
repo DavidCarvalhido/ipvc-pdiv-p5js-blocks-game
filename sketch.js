@@ -5,6 +5,7 @@ loadScript("./assets/block.js")
 loadScript("./assets/particle.js")
 loadScript("./pages/menu-screen.js")
 loadScript("./pages/game-screen.js")
+loadScript("./pages/level-transition-screen.js")
 loadScript("./pages/gameover-screen.js")
 
 // Variáveis globais
@@ -13,9 +14,12 @@ let gameResult = "lose "
 let menuScreen
 let gameScreen
 let gameOverScreen
+let levelTransitionScreen
 let score = 0
 let lives = 3
 let paddleHits = 0
+let level = 1
+let nextLevelReady = false
 
 function preload() {
     gameFont = loadFont("./assets/fonts/PressStart2P-Regular.ttf")
@@ -36,6 +40,8 @@ function setup() {
     fill(33)
 
     menuScreen = new MenuScreen()
+    gameScreen = new GameScreen()
+    levelTransitionScreen = new LevelTransitionScreen()
     gameOverScreen = new GameOverScreen()
 }
 
@@ -46,6 +52,8 @@ function draw() {
         menuScreen.draw()
     } else if (gameState === "game") {
         gameScreen.draw()
+    } else if (gameState === "leveltransition") {
+        levelTransitionScreen.draw()
     } else if (gameState === "gameover") {
         gameOverScreen.draw()
     }
@@ -58,7 +66,13 @@ function keyPressed() {
         score = 0
         lives = 3
         paddleHits = 0
+        level = 1
         gameScreen = new GameScreen()
+    }
+
+    if (gameState === "leveltransition" && (keyCode === ENTER || keyCode === 32)) {
+        gameScreen = new GameScreen()
+        gameState = "game"
     }
 
     if (gameState === "gameover" && (keyCode === ENTER || keyCode === 32)) {
