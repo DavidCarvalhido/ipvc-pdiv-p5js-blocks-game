@@ -12,9 +12,16 @@ class Ball {
         // velocidade da bola
         this.speedX = 1
         this.speedY = 5
+
+        //gravidade
+        this.gravity = 0.12
+        //this.gravity = createVector(0,0.2);
     }
 
     move() {
+        this.speedY += this.gravity
+        this.speedY = constrain(this.speedY, -15, 15) //opcional???
+
         this.x += this.speedX
         this.y += this.speedY
 

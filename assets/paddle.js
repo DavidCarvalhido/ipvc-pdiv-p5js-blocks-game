@@ -16,6 +16,12 @@ class Paddle {
         this.width = 130
         this.height = 20
         this.y = height - 40
+
+        this.baseY = height - 40
+        this.y = this.baseY
+        this.velocityY = 0
+        this.springForce = 0.15
+        this.damping = 0.75
     }
 
     move() {
@@ -38,11 +44,11 @@ class Paddle {
 
         beginShape()
 
-        let cx = this.x //width / 2
-        let cy = height - 40
-        let ch = height - 25
-        let w = 130
-        let h = 20
+        let cx = this.x
+        let cy = this.y
+        let ch = this.y + this.height / 2
+        let w = this.width
+        let h = this.height
 
         // arco
         for (let a = PI; a <= TWO_PI; a += 0.1) { // a += 0.1 -- menor, mais suave o arco
@@ -58,5 +64,15 @@ class Paddle {
         endShape(CLOSE)
 
         pop()
+    }
+
+    update() {
+        // força elástica
+        let force = (this.baseY - this.y) * this.springForce
+        this.velocityY += force
+
+        // amortecimento
+        this.velocityY *= this.damping
+        this.y += this.velocityY
     }
 }
