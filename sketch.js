@@ -36,7 +36,6 @@ function setup() {
     fill(33)
 
     menuScreen = new MenuScreen()
-    gameScreen = new GameScreen()
     gameOverScreen = new GameOverScreen()
 }
 
@@ -55,14 +54,14 @@ function draw() {
 function keyPressed() {
     if (gameState === "menu" && (keyCode === ENTER || keyCode === 32)) {
         gameState = "game"
-        score = 0
-    }
-
-    if (gameState === "gameover" && (keyCode === ENTER || keyCode === 32)) {
-        gameState = "menu"
+        //reinicia as variáveis
         score = 0
         lives = 3
         paddleHits = 0
         gameScreen = new GameScreen()
+    }
+
+    if (gameState === "gameover" && (keyCode === ENTER || keyCode === 32)) {
+        gameState = "menu"
     }
 }

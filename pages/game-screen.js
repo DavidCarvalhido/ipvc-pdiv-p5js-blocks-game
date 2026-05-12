@@ -1,5 +1,9 @@
 class GameScreen {
     constructor() {
+        this.countdown = 3
+        this.contagemAtiva = true
+        this.countdownTimer = millis()
+
         //área da pontuação
         this.hudHeight = 50
         //raquete
@@ -41,8 +45,12 @@ class GameScreen {
         this.paddle.draw()
         this.paddle.move()
 
+        // this.ball.draw()
+        // this.ball.move()
+        if (!this.contagemAtiva) {
+            this.ball.move()
+        }
         this.ball.draw()
-        this.ball.move()
 
         // verifica colisão bola com paddle
         this.verificaColisaoPaddle()
@@ -71,6 +79,9 @@ class GameScreen {
         }
 
         this.verificaParteInferior()
+
+        this.atualizaContagem()
+        this.contagem()
     }
 
     drawHUD() {
@@ -94,6 +105,35 @@ class GameScreen {
         text("Toques: " + paddleHits, 490, this.hudHeight / 2)
 
         pop()
+    }
+
+    contagem() {
+        if (!this.contagemAtiva) return
+
+        push()
+
+        textFont(gameFont)
+        textAlign(CENTER, CENTER)
+        fill(255)
+        stroke(0)
+        strokeWeight(4)
+        textSize(92)
+        text(this.countdown, width / 2, height / 2)
+
+        pop()
+    }
+
+    atualizaContagem() {
+        let elapsed = floor((millis() - this.countdownTimer) / 1000)
+        let remaining = 3 - elapsed
+
+        if (remaining > 0) {
+            this.countdown = remaining
+        } else if (remaining === 0) {
+            this.countdown = "VAI!"
+        } else {
+            this.contagemAtiva = false
+        }
     }
 
     // colisão entre a bola e o paddle
