@@ -161,29 +161,29 @@ class GameScreen {
     // colisão entre a bola e o paddle
     verificaColisaoPaddle() {
         // limites do paddle
-        let left = this.paddle.x - this.paddle.width / 2
-        let right = this.paddle.x + this.paddle.width / 2
-        let top = this.paddle.y - this.paddle.height / 2
+        let left = this.paddle.pos.x - this.paddle.width / 2
+        let right = this.paddle.pos.x + this.paddle.width / 2
+        let top = this.paddle.pos.y - this.paddle.height / 2
 
         // verifica colisão apenas se a bola estiver a descer
-        let dentroX = this.ball.x > left && this.ball.x < right
-        let tocouTopo = this.ball.y + this.ball.radius > top
+        let dentroX = this.ball.pos.x > left && this.ball.pos.x < right
+        let tocouTopo = this.ball.pos.y + this.ball.radius > top
 
-        if (dentroX && tocouTopo && this.ball.speedY > 0) {
+        if (dentroX && tocouTopo && this.ball.velo.y > 0) {
             // corrige posição para não atravessar
-            this.ball.y = top - this.ball.radius
+            this.ball.pos.y = top - this.ball.radius
 
             // calcula o impacto (-1 a 1)
-            let impacto = (this.ball.x - this.paddle.x) / (this.paddle.width / 2)
+            let impacto = (this.ball.pos.x - this.paddle.pos.x) / (this.paddle.width / 2)
 
             // aplica ângulo
-            this.ball.speedX = impacto * 8
-            this.ball.speedY *= -1
+            this.ball.velo.x = impacto * 8
+            this.ball.velo.y *= -1
 
             // boost de vel. nos cantos
-            this.ball.speedY *= 1.02
+            this.ball.velo.y *= 1.02
 
-            this.paddle.velocityY += 8
+            this.paddle.velo.y += 8
 
             // Aumenta o score ao longo do tempo -- apenas para teste
             //score += 10
@@ -202,12 +202,12 @@ class GameScreen {
             let bottom = block.y + block.height / 2
 
             // ponto mais próximo da bola
-            let closestX = constrain(this.ball.x, left, right)
-            let closestY = constrain(this.ball.y, top, bottom)
+            let closestX = constrain(this.ball.pos.x, left, right)
+            let closestY = constrain(this.ball.pos.y, top, bottom)
 
             // distância bola -> ponto
-            let distanceX = this.ball.x - closestX
-            let distanceY = this.ball.y - closestY
+            let distanceX = this.ball.pos.x - closestX
+            let distanceY = this.ball.pos.y - closestY
 
             // distância ao quadrado
             let distanceSquared = distanceX * distanceX + distanceY * distanceY
@@ -217,21 +217,21 @@ class GameScreen {
                 // descobre a direção principal da colisão
                 if (abs(distanceX) > abs(distanceY)) {
                     // colisão lateral
-                    this.ball.speedX *= -1
+                    this.ball.velo.x *= -1
 
                     if (distanceX > 0) {
-                        this.ball.x = right + this.ball.radius
+                        this.ball.pos.x = right + this.ball.radius
                     } else {
-                        this.ball.x = left - this.ball.radius
+                        this.ball.pos.x = left - this.ball.radius
                     }
                 } else {
                     // colisão vertical
-                    this.ball.speedY *= -1
+                    this.ball.velo.y *= -1
 
                     if (distanceY > 0) {
-                        this.ball.y = bottom + this.ball.radius
+                        this.ball.pos.y = bottom + this.ball.radius
                     } else {
-                        this.ball.y = top - this.ball.radius
+                        this.ball.pos.y = top - this.ball.radius
                     }
                 }
 
@@ -251,7 +251,7 @@ class GameScreen {
                 }
 
                 let particleColor = color(block.colors[block.hits - 1])
-                this.spawnParticles(this.ball.x, block.y, particleColor, particleType, 15)
+                this.spawnParticles(this.ball.pos.x, block.y, particleColor, particleType, 15)
 
                 // score
                 score += 10
@@ -273,7 +273,7 @@ class GameScreen {
     }
 
     verificaParteInferior() {
-        if (this.ball.y - this.ball.radius > height) {
+        if (this.ball.pos.y - this.ball.radius > height) {
             lives--
 
             // sem vidas -> game over
