@@ -1,5 +1,11 @@
 class GameScreen {
     constructor() {
+        this.countdown = 3
+        this.contagemAtiva = true
+        this.countdownTimer = millis()
+
+        //área da pontuação
+        this.hudHeight = 50
         //raquete
         this.paddle = new Paddle()
         //bola
@@ -18,7 +24,7 @@ class GameScreen {
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 let x = 100 + j * (blockW + spacing)
-                let y = 80 + i * (blockH + spacing)
+                let y = this.hudHeight + 40 + i * (blockH + spacing)
 
                 this.blocks.push(new Block(x, y, blockW, blockH))
             }
@@ -26,15 +32,25 @@ class GameScreen {
     }
 
     draw() {
-        fill(255)
-        textSize(20)
-        text("Score: " + score, 70, 30)
+        imageMode(CENTER)
+        image(levelOneBackground, width / 2, height / 2, width, height)
+
+        this.drawHUD()
+        // fill(255)
+        // textSize(20)
+        // text("Score: " + score, 70, 30)
+        // text("Vidas: " + lives, 40, 70)
+        // text("Toques: " + paddleHits, 40, 100)
 
         this.paddle.draw()
         this.paddle.move()
 
+        // this.ball.draw()
+        // this.ball.move()
+        if (!this.contagemAtiva) {
+            this.ball.move()
+        }
         this.ball.draw()
-        this.ball.move()
 
         // verifica colisão bola com paddle
         this.verificaColisaoPaddle()
@@ -53,6 +69,70 @@ class GameScreen {
             if (this.particles[i].isDead()) {
                 this.particles.splice(i, 1)
             }
+        }
+
+        this.blocks = this.blocks.filter(block => !block.isDestroyed())
+
+        if (this.blocks.length === 0) {
+            gameResult = "win"
+            gameState = "gameover"
+        }
+
+        this.verificaParteInferior()
+
+        this.atualizaContagem()
+        this.contagem()
+    }
+
+    drawHUD() {
+        push()
+
+        // fundo da barra
+        fill("#111827")
+        rectMode(CORNER)
+        rect(0, 0, width, this.hudHeight)
+        // linha separadora
+        stroke(255, 50)
+        line(0, this.hudHeight, width, this.hudHeight)
+        noStroke()
+
+        fill(255)
+        textSize(22)
+        textFont(gameFont)
+        textAlign(LEFT, CENTER)
+        text("Score: " + score, 30, this.hudHeight / 2)
+        text("Vidas: " + lives, 270, this.hudHeight / 2)
+        text("Toques: " + paddleHits, 490, this.hudHeight / 2)
+
+        pop()
+    }
+
+    contagem() {
+        if (!this.contagemAtiva) return
+
+        push()
+
+        textFont(gameFont)
+        textAlign(CENTER, CENTER)
+        fill(255)
+        stroke(0)
+        strokeWeight(4)
+        textSize(92)
+        text(this.countdown, width / 2, height / 2)
+
+        pop()
+    }
+
+    atualizaContagem() {
+        let elapsed = floor((millis() - this.countdownTimer) / 1000)
+        let remaining = 3 - elapsed
+
+        if (remaining > 0) {
+            this.countdown = remaining
+        } else if (remaining === 0) {
+            this.countdown = "VAI!"
+        } else {
+            this.contagemAtiva = false
         }
     }
 
@@ -83,6 +163,7 @@ class GameScreen {
 
             // Aumenta o score ao longo do tempo -- apenas para teste
             //score += 10
+            paddleHits++
         }
     }
 
@@ -164,6 +245,22 @@ class GameScreen {
             this.particles.push(
                 new Particle(emitter, particleColor, type)
             )
+        }
+    }
+
+    verificaParteInferior() {
+        if (this.ball.y - this.ball.radius > height) {
+            lives--
+
+            // sem vidas -> game over
+            if (lives <= 0) {
+                gameResult = "lose"
+                gameState = "gameover"
+                return
+            }
+
+            // reset da bola
+            this.ball = new Ball()
         }
     }
 }
