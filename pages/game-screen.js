@@ -42,6 +42,7 @@ class GameScreen {
         // text("Vidas: " + lives, 40, 70)
         // text("Toques: " + paddleHits, 40, 100)
 
+        this.paddle.update()
         this.paddle.draw()
         this.paddle.move()
 
@@ -160,6 +161,8 @@ class GameScreen {
 
             // boost de vel. nos cantos
             this.ball.speedY *= 1.02
+
+            this.paddle.velocityY += 8
 
             // Aumenta o score ao longo do tempo -- apenas para teste
             //score += 10
