@@ -33,6 +33,7 @@ function preload() {
 
 function setup() {
     createCanvas(1200, 600)
+    // createCanvas(windowWidth, windowHeight)
     noCursor()
     rectMode(CENTER)
     textSize(30)
@@ -58,6 +59,10 @@ function draw() {
         gameOverScreen.draw()
     }
 }
+
+// function windowResized() {
+//   resizeCanvas(windowWidth, windowHeight)
+// }
 
 function keyPressed() {
     if (gameState === "menu" && (keyCode === ENTER || keyCode === 32)) {

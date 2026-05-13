@@ -18,14 +18,21 @@ class GameScreen {
         let cols = 8
         //let rows = 1 // remover
         let rows = level
-        let blockW = 130
-        let blockH = 30
+        // let blockW = 130
+        // let blockH = 30
         let spacing = 10
+        let blockW = (width - 40) / cols - spacing
+        let blockH = height * 0.05  // 5% da altura do canvas
+        let startX = 20
 
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                let x = 100 + j * (blockW + spacing)
-                let y = this.hudHeight + 40 + i * (blockH + spacing)
+                // let x = 100 + j * (blockW + spacing)
+                //let y = this.hudHeight + 40 + i * (blockH + spacing)
+
+                let x = startX + j * (blockW + spacing) + blockW / 2
+                let y = this.hudHeight + 40 + i * (blockH + spacing) + blockH / 2
+
 
                 this.blocks.push(new Block(x, y, blockW, blockH))
             }
@@ -278,9 +285,9 @@ class GameScreen {
 
             // sem vidas -> game over
             if (lives <= 0) {
-                // gameResult = "lose"
-                // gameState = "gameover"
-                this.nextLevel()
+                gameResult = "lose"
+                gameState = "gameover"
+                //this.nextLevel()
                 return
             }
 
