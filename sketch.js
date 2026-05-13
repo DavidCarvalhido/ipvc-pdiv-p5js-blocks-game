@@ -1,13 +1,3 @@
-loadScript("./p5.min.js")
-loadScript("./assets/components/paddle.js")
-loadScript("./assets/components/ball.js")
-loadScript("./assets/components/block.js")
-loadScript("./assets/components/particle.js")
-loadScript("./pages/menu-screen.js")
-loadScript("./pages/game-screen.js")
-loadScript("./pages/level-transition-screen.js")
-loadScript("./pages/gameover-screen.js")
-
 // Variáveis globais
 let gameState = "menu"
 let gameResult = "lose "
