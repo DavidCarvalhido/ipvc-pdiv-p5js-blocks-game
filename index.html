@@ -7,17 +7,16 @@
     <link rel="icon" type="image/x-icon" href="./assets/favicon/favicon.svg">
     <link rel="stylesheet" type="text/css" href="./style.css">
 
-    <script>
-        function loadScript(url) {
-            var head = document.getElementsByTagName('head')[0];
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = url;
-            head.appendChild(script);
-        }
-    </script>
-    <!-- <script src="p5.min.js"></script> -->
+    <script src="./libraries/p5.min.js"></script>
     <!-- Load do jogo -->
+    <script src="./pages/menu-screen.js"></script>
+    <script src="./pages/level-transition-screen.js"></script>
+    <script src="./pages/game-screen.js"></script>
+    <script src="./pages/gameover-screen.js"></script>
+    <script src="./assets/components/ball.js"></script>
+    <script src="./assets/components/paddle.js"></script>
+    <script src="./assets/components/particle.js"></script>
+    <script src="./assets/components/block.js"></script>
     <script src="sketch.js"></script>
 </head>
 <body>
