@@ -132,6 +132,13 @@ class GameScreen {
         lives = 3
         // recria o jogo
         //gameScreen = new GameScreen()
+        if (!levelTransitionMusic.isPlaying()) {
+            if (gameMusic.isPlaying()) {
+                gameMusic.stop()
+            }
+            levelTransitionMusic.setVolume(0.35)
+            levelTransitionMusic.play()
+        }
         gameState = "leveltransition"
         nextLevelReady = true
     }
@@ -244,6 +251,8 @@ class GameScreen {
 
                 // regista o toque
                 block.hit()
+                blockHitSound.play()
+                blockHitSound.rate(random(0.9, 1.1))
 
                 let particleType = "circle"
 
@@ -282,6 +291,9 @@ class GameScreen {
     verificaParteInferior() {
         if (this.ball.pos.y - this.ball.radius > height) {
             lives--
+            if (lifeLostSound) {
+                lifeLostSound.play()
+            }
 
             // sem vidas -> game over
             if (lives <= 0) {
