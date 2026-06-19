@@ -1,5 +1,6 @@
 // Variáveis globais
 let gameState = "menu"
+let gameMode = "single"
 let gameResult = "lose "
 let menuScreen
 let gameScreen
@@ -18,9 +19,26 @@ let lifeLostSound
 let blockHitSound
 let gameOverSound
 
+let playerNames = ["", ""]
+let currentPlayer = 0
+
+let playerResults = [
+    {
+        score: 0,
+        hits: 0,
+        level: 1
+    },
+    {
+        score: 0,
+        hits: 0,
+        level: 1
+    }
+]
+
 function preload() {
     gameFont = loadFont("./assets/fonts/PressStart2P-Regular.ttf")
     menuImage = loadImage("./assets/images/menu-background.jpg")
+    playerSetupImage = loadImage("./assets/images/playersname-background.png")
     menuBlocksImage = loadImage("./assets/images/menu-blocks.png")
     objectiveMenuImage = loadImage("./assets/images/objective-icon.png")
 
@@ -39,13 +57,15 @@ function preload() {
 function setup() {
     createCanvas(1200, 600)
     // createCanvas(windowWidth, windowHeight)
-    noCursor()
+    //noCursor()
+    cursor(CROSS);
     rectMode(CENTER)
     textSize(30)
     noStroke()
     fill(33)
 
     menuScreen = new MenuScreen()
+    playerSetupScreen = new PlayerSetupScreen()
     gameScreen = new GameScreen()
     levelTransitionScreen = new LevelTransitionScreen()
     gameOverScreen = new GameOverScreen()
@@ -63,9 +83,13 @@ function draw() {
             gameOverSound.stop()
         }
         menuScreen.draw()
+    } else if (gameState === "playerSetup") {
+        playerSetupScreen.draw()
+        gameMusic.stop()
     } else if (gameState === "game") {
         if (menuMusic.isPlaying()) {
             menuMusic.stop()
+            gameMusic.play()
         }
         gameScreen.draw()
     } else if (gameState === "leveltransition") {
@@ -95,7 +119,7 @@ function draw() {
 
 function keyPressed() {
     if (gameState === "menu" && (keyCode === ENTER || keyCode === 32)) {
-        gameState = "game"
+        gameState = "playerSetup"
         //reinicia as variáveis
         score = 0
         lives = 3
@@ -126,4 +150,40 @@ function keyPressed() {
     if (gameState === "gameover" && (keyCode === ENTER || keyCode === 32)) {
         gameState = "menu"
     }
+}
+
+function resetPlayer() {
+    // reinicia estatísticas
+    score = 0
+    lives = 3
+    paddleHits = 0
+
+    // começa sempre no nível 1
+    currentLevel = 1
+
+    // recria o jogo
+    gameScreen = new GameScreen()
+}
+
+function calculateWinner() {
+    let p1 = playerResults[0]
+    let p2 = playerResults[1]
+
+    if (p1.level > p2.level) {
+        return 0
+    }
+
+    if (p2.level > p1.level) {
+        return 1
+    }
+
+    if (p1.score > p2.score) {
+        return 0
+    }
+
+    if (p2.score > p1.score) {
+        return 1
+    }
+
+    return (p1.hits < p2.hits) ? 0 : 1
 }
