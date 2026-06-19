@@ -115,8 +115,46 @@ class GameScreen {
         text("Toques: " + paddleHits, 490, this.hudHeight / 2)
         textAlign(RIGHT, CENTER)
         text("Nível: " + level, width - 20, this.hudHeight / 2)
+        text("Jogador: " + playerNames[currentPlayer], width - 20, this.hudHeight / 2 + 30)
 
         pop()
+    }
+
+    finishPlayer() {
+        playerResults[currentPlayer] = {
+            score: score,
+            hits: paddleHits,
+            level: currentLevel
+        }
+
+        if (currentPlayer === 0) {
+            currentPlayer++
+            resetPlayer()
+            gameState = "leveltransition"
+        }
+        else {
+            gameResult = calculateWinner()
+            gameState = "gameover"
+        }
+    }
+
+    finishRound() {
+        // guardar resultados do jogador atual
+        playerResults[currentPlayer] = {
+            score: score,
+            hits: paddleHits,
+            level: currentLevel
+        }
+        // ainda falta jogador 2
+        if (currentPlayer === 0) {
+            currentPlayer = 1
+            resetPlayer()
+            gameState = "leveltransition"
+            return
+        }
+        // terminou jogador 2
+        gameResult = calculateWinner()
+        gameState = "gameover"
     }
 
     nextLevel() {
@@ -124,8 +162,9 @@ class GameScreen {
 
         // terminou todos os níveis
         if (level > 3) {
-            gameResult = "win"
-            gameState = "gameover"
+            this.finishRound()
+            // gameResult = "win"
+            // gameState = "gameover"
             return
         }
         // reset vidas
@@ -297,8 +336,9 @@ class GameScreen {
 
             // sem vidas -> game over
             if (lives <= 0) {
-                gameResult = "lose"
-                gameState = "gameover"
+                this.finishRound()
+                // gameResult = "lose"
+                // gameState = "gameover"
                 //this.nextLevel()
                 return
             }
