@@ -11,6 +11,8 @@ let lives = 3
 let paddleHits = 0
 let level = 1
 let nextLevelReady = false
+let showTrajectoryLine = true
+let trajectoryToggleButton
 
 let menuMusic
 let gameMusic
@@ -64,6 +66,17 @@ function setup() {
     noStroke()
     fill(33)
 
+    trajectoryToggleButton = createButton("Linha: ON")
+    trajectoryToggleButton.position(20, 20)
+    trajectoryToggleButton.style('background-color', '#0ea5e9')
+    trajectoryToggleButton.style('color', 'white')
+    trajectoryToggleButton.style('border', 'none')
+    trajectoryToggleButton.style('border-radius', '8px')
+    trajectoryToggleButton.style('padding', '10px 16px')
+    trajectoryToggleButton.style('font-size', '14px')
+    trajectoryToggleButton.mousePressed(toggleTrajectory)
+    trajectoryToggleButton.hide()
+
     menuScreen = new MenuScreen()
     playerSetupScreen = new PlayerSetupScreen()
     gameScreen = new GameScreen()
@@ -75,6 +88,7 @@ function draw() {
     background(28, 28, 29)
 
     if (gameState === "menu") {
+        trajectoryToggleButton.hide()
         if (!menuMusic.isPlaying()) {
             menuMusic.setVolume(0.25)
             menuMusic.loop()
@@ -84,6 +98,7 @@ function draw() {
         }
         menuScreen.draw()
     } else if (gameState === "playerSetup") {
+        trajectoryToggleButton.hide()
         playerSetupScreen.draw()
         gameMusic.stop()
     } else if (gameState === "game") {
@@ -91,8 +106,10 @@ function draw() {
             menuMusic.stop()
             gameMusic.play()
         }
+        trajectoryToggleButton.show()
         gameScreen.draw()
     } else if (gameState === "leveltransition") {
+        trajectoryToggleButton.hide()
         if (!levelTransitionMusic.isPlaying()) {
             if (gameMusic.isPlaying()) {
                 gameMusic.stop()
@@ -102,6 +119,7 @@ function draw() {
         }
         levelTransitionScreen.draw()
     } else if (gameState === "gameover") {
+        trajectoryToggleButton.hide()
         if (gameMusic.isPlaying()) {
             gameMusic.stop()
         }
@@ -116,6 +134,11 @@ function draw() {
 // function windowResized() {
 //   resizeCanvas(windowWidth, windowHeight)
 // }
+
+function toggleTrajectory() {
+    showTrajectoryLine = !showTrajectoryLine
+    trajectoryToggleButton.html(showTrajectoryLine ? "Linha: ON" : "Linha: OFF")
+}
 
 function keyPressed() {
     if (gameState === "menu" && (keyCode === ENTER || keyCode === 32)) {

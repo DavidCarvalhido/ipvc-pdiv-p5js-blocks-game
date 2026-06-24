@@ -57,6 +57,9 @@ class GameScreen {
         // this.ball.draw()
         // this.ball.move()
         if (!this.contagemAtiva) {
+            if (showTrajectoryLine && this.ball.velo.y > 0) {
+                this.drawTrajectory()
+            }
             this.ball.move()
         }
         this.ball.draw()
@@ -315,6 +318,117 @@ class GameScreen {
                 break
             }
         }
+    }
+
+    drawTrajectory() {
+        let simX = this.ball.pos.x
+        let simY = this.ball.pos.y
+        let simVX = this.ball.velo.x
+        let simVY = this.ball.velo.y
+        let gravity = this.ball.grav.y
+        let paddleTop = this.paddle.pos.y - this.paddle.height / 2
+        let paddleCenterX = this.paddle.pos.x
+        let paddleVelocityY = this.paddle.velo.y
+
+        push()
+
+        stroke("#2b6cb0")
+        strokeWeight(3)
+        noFill()
+        drawingContext.setLineDash([10, 10])
+
+        beginShape()
+        vertex(this.ball.pos.x, this.ball.pos.y)
+
+        let hitX = this.ball.pos.x
+        let hitY = this.ball.pos.y
+        let impactFound = false
+
+        for (let i = 0; i < 120; i++) {
+            simVY += gravity
+            simX += simVX
+            simY += simVY
+
+            // paredes
+            if (simX < this.ball.radius) {
+                simX = this.ball.radius
+                simVX *= -1
+            } else if (simX > width - this.ball.radius) {
+                simX = width - this.ball.radius
+                simVX *= -1
+            }
+
+            // teto
+            if (simY < this.hudHeight + this.ball.radius) {
+                simY = this.hudHeight + this.ball.radius
+                simVY *= -1
+            }
+
+            vertex(simX, simY)
+
+            // prever contacto na raquete
+            if (simVY > 0 && simY + this.ball.radius >= paddleTop) {
+                hitX = simX
+                hitY = paddleTop
+                impactFound = true
+                break
+            }
+        }
+
+        endShape()
+
+        if (impactFound) {
+            drawingContext.setLineDash([])
+            fill("#0ea5e9")
+            noStroke()
+            circle(hitX, hitY, 10)
+
+            stroke("#2b6cb0")
+            drawingContext.setLineDash([10, 10])
+            noFill()
+
+            let impacto = (hitX - paddleCenterX) / (this.paddle.width / 2)
+            let bounceVX = impacto * 8
+            let bounceVY = -abs(simVY) - abs(paddleVelocityY) * 0.7
+
+            beginShape()
+            vertex(hitX, hitY)
+
+            for (let i = 0; i < 25; i++) {
+                bounceVY += gravity
+                hitX += bounceVX
+                hitY += bounceVY
+
+                if (hitX < this.ball.radius) {
+                    hitX = this.ball.radius
+                    bounceVX *= -1
+                } else if (hitX > width - this.ball.radius) {
+                    hitX = width - this.ball.radius
+                    bounceVX *= -1
+                }
+
+                vertex(hitX, hitY)
+
+                for (let block of this.blocks) {
+                    if (block.isDestroyed()) continue
+
+                    let insideX = hitX > block.x - block.width / 2 && hitX < block.x + block.width / 2
+                    let insideY = hitY > block.y - block.height / 2 && hitY < block.y + block.height / 2
+
+                    if (insideX && insideY) {
+                        endShape()
+                        drawingContext.setLineDash([])
+                        pop()
+                        return
+                    }
+                }
+            }
+
+            endShape()
+            drawingContext.setLineDash([])
+        }
+
+        pop()
     }
 
     spawnParticles(x, y, particleColor, type, amount = 15) {
