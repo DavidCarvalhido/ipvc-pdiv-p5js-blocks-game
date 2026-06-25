@@ -280,6 +280,9 @@ function resetPlayer() {
 
     // começa sempre no nível 1
     currentLevel = 1
+    level = 1
+    nextLevelReady = false
+    isPaused = false
 
     // recria o jogo
     gameScreen = new GameScreen()
