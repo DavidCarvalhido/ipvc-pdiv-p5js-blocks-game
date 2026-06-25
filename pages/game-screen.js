@@ -97,28 +97,39 @@ class GameScreen {
         this.contagem()
     }
 
+    // faz o draw sem atualizar a física (para a pausa)
+    drawPaused() {
+        imageMode(CENTER)
+        image(levelOneBackground, width / 2, height / 2, width, height)
+
+        this.drawHUD()
+
+        // faz o draw da raquete e da bola sem atualizar a física
+        this.paddle.draw()
+
+        this.ball.draw()
+
+        // faz o draw dos blocos e partículas
+        for (let block of this.blocks) {
+            block.draw()
+        }
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            this.particles[i].draw()
+        }
+    }
+
     drawHUD() {
         push()
 
         // fundo da barra
-        fill("#111827")
+        fill("#64536e")
         rectMode(CORNER)
         rect(0, 0, width, this.hudHeight)
         // linha separadora
         stroke(255, 50)
         line(0, this.hudHeight, width, this.hudHeight)
         noStroke()
-
-        fill(255)
-        textSize(22)
-        textFont(gameFont)
-        textAlign(LEFT, CENTER)
-        text("Score: " + score, 30, this.hudHeight / 2)
-        text("Vidas: " + lives, 270, this.hudHeight / 2)
-        text("Toques: " + paddleHits, 490, this.hudHeight / 2)
-        textAlign(RIGHT, CENTER)
-        text("Nível: " + level, width - 20, this.hudHeight / 2)
-        text("Jogador: " + playerNames[currentPlayer], width - 20, this.hudHeight / 2 + 30)
 
         pop()
     }

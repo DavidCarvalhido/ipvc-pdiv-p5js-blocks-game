@@ -81,7 +81,8 @@ class MenuScreen {
         fill(255)
         text("Mova a raquete com o rato horizontalmente", 40, height * 0.82)
         text("Precisa de acertar 3 vezes em cada bloco", 40, height * 0.85)
-        text("Tem 3 bolas para jogar", 40, height * 0.88)
+        text("A cada nível há mais uma linha de blocos", 40, height * 0.88)
+        text("Tem 3 bolas para jogar", 40, height * 0.91)
 
         pop()
     }

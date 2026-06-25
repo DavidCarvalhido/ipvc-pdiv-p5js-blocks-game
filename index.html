@@ -10,20 +10,45 @@
     <!-- Carregamento de bibliotecas -->
     <script src="./libraries/p5.min.js"></script>
     <script src="./libraries/p5.sound.min.js"></script>
-    <!-- Load do jogo -->
-    <script src="./pages/menu-screen.js"></script>
-    <script src="./pages/player-setup-screen.js"></script>
-    <script src="./pages/level-transition-screen.js"></script>
-    <script src="./pages/game-screen.js"></script>
-    <script src="./pages/gameover-screen.js"></script>
-    <script src="./assets/components/ball.js"></script>
-    <script src="./assets/components/paddle.js"></script>
-    <script src="./assets/components/particle.js"></script>
-    <script src="./assets/components/block.js"></script>
-    <script src="sketch.js"></script>
 </head>
 <body>
-    <main>
+    <main id="app">
+        <div id="game-area">
+            <div id="canvas-container"></div>
+            <div id="instructions">
+                <strong>Dicas:</strong>
+                <ul>
+                    <li>Para reduzir o número de toques na raquete, mova o rato com força</li>
+                    <li>Utilize a linha de trajetória para planear os seus movimentos</li>
+                </ul>
+            </div>
+        </div>
+
+        <aside id="sidebar">
+            <div class="info-box">
+                <p class="info-item"><strong>Nível:</strong> <span id="ui-level">1</span></p>
+                <br>
+                <p class="info-item"><strong>Score:</strong> <span id="ui-score">0</span></p>
+                <br>
+                <p class="info-item"><strong>Vidas:</strong> <span id="ui-lives">3</span></p>
+                <br>
+                <p class="info-item"><strong>Toques:</strong> <span id="ui-hits">0</span></p>
+                <br>
+                <p class="info-item"><strong>Jogador:</strong> <span id="ui-player">---</span></p>
+            </div>
+        </aside>
     </main>
+
+    <!-- Load do jogo (scripts colocados no fim para garantir DOM) -->
+    <script src="./pages/menu-screen.js" defer></script>
+    <script src="./pages/player-setup-screen.js" defer></script>
+    <script src="./pages/level-transition-screen.js" defer></script>
+    <script src="./pages/game-screen.js" defer></script>
+    <script src="./pages/gameover-screen.js" defer></script>
+    <script src="./assets/components/ball.js" defer></script>
+    <script src="./assets/components/paddle.js" defer></script>
+    <script src="./assets/components/particle.js" defer></script>
+    <script src="./assets/components/block.js" defer></script>
+    <script src="sketch.js" defer></script>
 </body>
 </html>
