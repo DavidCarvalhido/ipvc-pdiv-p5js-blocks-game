@@ -13,6 +13,10 @@ let level = 1
 let nextLevelReady = false
 let showTrajectoryLine = true
 let trajectoryToggleButton
+let pauseButton
+let isPaused = false
+let wasGameMusicPlaying = false
+let wasLevelTransitionMusicPlaying = false
 
 let menuMusic
 let gameMusic
@@ -57,9 +61,17 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(1200, 600)
-    // createCanvas(windowWidth, windowHeight)
-    //noCursor()
+    const ASPECT_RATIO = 2 // width / height (originally 1200x600)
+    let container = document.getElementById('canvas-container')
+    let sidebar = document.getElementById('sidebar')
+    let sidebarWidth = sidebar ? sidebar.clientWidth : 320
+    let maxAvailableWidth = max(600, window.innerWidth - sidebarWidth)
+    let maxAvailableHeight = max(400, window.innerHeight)
+    let calcWidth = min(maxAvailableWidth, floor(maxAvailableHeight * ASPECT_RATIO))
+    let calcHeight = floor(calcWidth / ASPECT_RATIO)
+    let cnv = createCanvas(calcWidth, calcHeight)
+    cnv.parent('canvas-container')
+
     cursor(CROSS);
     rectMode(CENTER)
     textSize(30)
@@ -67,7 +79,8 @@ function setup() {
     fill(33)
 
     trajectoryToggleButton = createButton("Linha: ON")
-    trajectoryToggleButton.position(20, 20)
+    trajectoryToggleButton.addClass('trajectory-btn')
+    trajectoryToggleButton.parent('sidebar')
     trajectoryToggleButton.style('background-color', '#0ea5e9')
     trajectoryToggleButton.style('color', 'white')
     trajectoryToggleButton.style('border', 'none')
@@ -76,6 +89,13 @@ function setup() {
     trajectoryToggleButton.style('font-size', '14px')
     trajectoryToggleButton.mousePressed(toggleTrajectory)
     trajectoryToggleButton.hide()
+
+    pauseButton = createButton("Pausa")
+    pauseButton.addClass('trajectory-btn')
+    pauseButton.addClass('pause-btn')
+    pauseButton.parent('sidebar')
+    pauseButton.mousePressed(togglePause)
+    pauseButton.hide()
 
     menuScreen = new MenuScreen()
     playerSetupScreen = new PlayerSetupScreen()
@@ -86,9 +106,11 @@ function setup() {
 
 function draw() {
     background(28, 28, 29)
+    updateUI()
 
     if (gameState === "menu") {
         trajectoryToggleButton.hide()
+        pauseButton.hide()
         if (!menuMusic.isPlaying()) {
             menuMusic.setVolume(0.25)
             menuMusic.loop()
@@ -99,6 +121,7 @@ function draw() {
         menuScreen.draw()
     } else if (gameState === "playerSetup") {
         trajectoryToggleButton.hide()
+        pauseButton.hide()
         playerSetupScreen.draw()
         gameMusic.stop()
     } else if (gameState === "game") {
@@ -107,9 +130,33 @@ function draw() {
             gameMusic.play()
         }
         trajectoryToggleButton.show()
-        gameScreen.draw()
+        pauseButton.show()
+        if (isPaused) {
+            // faz o draw do estado de pausa sem atualizar a física
+            if (gameScreen.drawPaused) {
+                gameScreen.drawPaused()
+            } else {
+                gameScreen.draw()
+            }
+
+            push()
+
+            fill(0, 0, 0, 150)
+            rectMode(CORNER)
+            rect(0, 0, width, height)
+            textAlign(CENTER, CENTER)
+            textFont(gameFont)
+            fill(255)
+            textSize(48)
+            text("PAUSA", width / 2, height / 2)
+
+            pop()
+        } else {
+            gameScreen.draw()
+        }
     } else if (gameState === "leveltransition") {
         trajectoryToggleButton.hide()
+        pauseButton.hide()
         if (!levelTransitionMusic.isPlaying()) {
             if (gameMusic.isPlaying()) {
                 gameMusic.stop()
@@ -120,6 +167,7 @@ function draw() {
         levelTransitionScreen.draw()
     } else if (gameState === "gameover") {
         trajectoryToggleButton.hide()
+        pauseButton.hide()
         if (gameMusic.isPlaying()) {
             gameMusic.stop()
         }
@@ -131,16 +179,65 @@ function draw() {
     }
 }
 
-// function windowResized() {
-//   resizeCanvas(windowWidth, windowHeight)
-// }
-
 function toggleTrajectory() {
     showTrajectoryLine = !showTrajectoryLine
     trajectoryToggleButton.html(showTrajectoryLine ? "Linha: ON" : "Linha: OFF")
 }
 
+function togglePause() {
+    isPaused = !isPaused
+    pauseButton.html(isPaused ? 'Continuar' : 'Pausa')
+    try {
+        if (isPaused) {
+            wasGameMusicPlaying = (gameMusic && typeof gameMusic.isPlaying === 'function') ? gameMusic.isPlaying() : false
+            if (wasGameMusicPlaying && gameMusic && typeof gameMusic.pause === 'function') gameMusic.pause()
+
+            wasLevelTransitionMusicPlaying = (levelTransitionMusic && typeof levelTransitionMusic.isPlaying === 'function') ? levelTransitionMusic.isPlaying() : false
+            if (wasLevelTransitionMusicPlaying && levelTransitionMusic && typeof levelTransitionMusic.pause === 'function') levelTransitionMusic.pause()
+        } else {
+            if (wasGameMusicPlaying && gameMusic && typeof gameMusic.play === 'function') gameMusic.play()
+            if (wasLevelTransitionMusicPlaying && levelTransitionMusic && typeof levelTransitionMusic.play === 'function') levelTransitionMusic.play()
+
+            wasGameMusicPlaying = false
+            wasLevelTransitionMusicPlaying = false
+        }
+    } catch (e) {
+        console.warn('Audio pause/resume failed', e)
+    }
+}
+
+function windowResized() {
+    let container = document.getElementById('canvas-container')
+    if (container) {
+        const ASPECT_RATIO = 2
+        let sidebar = document.getElementById('sidebar')
+        let sidebarWidth = sidebar ? sidebar.clientWidth : 320
+        let maxAvailableWidth = max(600, window.innerWidth - sidebarWidth)
+        let maxAvailableHeight = max(400, window.innerHeight)
+        let newW = min(maxAvailableWidth, floor(maxAvailableHeight * ASPECT_RATIO))
+        let newH = floor(newW / ASPECT_RATIO)
+        resizeCanvas(newW, newH)
+    }
+}
+
+function updateUI() {
+    let s = document.getElementById('ui-score')
+    let l = document.getElementById('ui-lives')
+    let h = document.getElementById('ui-hits')
+    let p = document.getElementById('ui-player')
+    let n = document.getElementById('ui-level')
+    if (s) s.textContent = score
+    if (l) l.textContent = lives
+    if (h) h.textContent = paddleHits
+    if (p) p.textContent = playerNames[currentPlayer] || '---'
+    if (n) n.textContent = level
+}
+
 function keyPressed() {
+    if (gameState === "game" && (key === 'p' || key === 'P')) {
+        togglePause()
+        return
+    }
     if (gameState === "menu" && (keyCode === ENTER || keyCode === 32)) {
         gameState = "playerSetup"
         //reinicia as variáveis
