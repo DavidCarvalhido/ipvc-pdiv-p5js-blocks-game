@@ -41,9 +41,11 @@ class PlayerSetupScreen {
     }
 
     positionInputs() {
-        this.inputs[0].position(width / 2, height / 2)
-        this.inputs[1].position(width / 2, height / 2 + 60)
-        this.button.position(width / 2, height / 2 + 130)
+        let inputWidth = 255
+        let centerX = width / 2 - inputWidth / 2
+        this.inputs[0].position(centerX, height / 2)
+        this.inputs[1].position(centerX, height / 2 + 60)
+        this.button.position(width / 2 - this.button.width / 2, height / 2 + 130)
     }
 
     hide() {

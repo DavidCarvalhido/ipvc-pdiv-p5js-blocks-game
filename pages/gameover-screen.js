@@ -20,14 +20,20 @@ class GameOverScreen {
         }
 
         noStroke()
+
+        fill(59, 59, 59, 252)
+        stroke(153, 153, 153)
+        strokeWeight(2)
+        rect(width / 2, height / 2, width / 1.5, 500, 10)
     }
 
     drawTitle() {
         push()
+        textFont(gameFont)
         textAlign(CENTER, CENTER)
-        fill(0, 255, 153)
-        textSize(70)
-        text("FIM DO JOGO!", width / 2, height * 0.3)
+        fill(255, 47, 0)
+        textSize(50)
+        text("FIM DO JOGO!", width / 2, height * 0.22)
 
         pop()
     }
@@ -35,11 +41,22 @@ class GameOverScreen {
     drawScore() {
         push()
 
-        fill(255)
+        textFont(gameFont)
         textAlign(CENTER)
-        textSize(28)
-        text("Pontuação Final: " + score, width / 2, height * 0.5)
-        text("Toques na Paddle: " + paddleHits, width / 2, height * 0.55)
+        textSize(18)
+        fill(255)
+
+        let finalScore = score
+        let finalHits = paddleHits
+
+        if (typeof gameResult === "number" && playerResults[gameResult]) {
+            text(playerNames[gameResult] + " venceu!", width / 2, height / 2.5)
+            finalScore = playerResults[gameResult].score
+            finalHits = playerResults[gameResult].hits
+        }
+
+        text("Pontuação Final: " + finalScore, width / 2, height * 0.6)
+        text("Toques na Paddle: " + finalHits, width / 2, height * 0.65)
 
         pop()
     }
@@ -47,10 +64,11 @@ class GameOverScreen {
     drawInstructions() {
         push()
 
-        fill(200)
+        textFont(gameFont)
         textAlign(CENTER)
-        textSize(22)
-        text("Para voltar a jogar, pressione ENTER ou ESPAÇO", width / 2, height * 0.7)
+        textSize(12)
+        fill(200)
+        text("Para voltar a jogar, pressione ENTER ou ESPAÇO", width / 2, height * 0.8)
 
         pop()
     }
